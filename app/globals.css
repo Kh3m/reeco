@@ -1,26 +1,90 @@
 @import "tailwindcss";
 
+/*
+  ReeCo brand design system.
+  Premium, minimalist, analytical. Black canvas, gold accent, white text.
+  Tokens are exposed to Tailwind v4 via @theme so utilities like
+  `bg-background`, `text-accent`, `border-border`, `font-display` are generated.
+*/
+
+@theme {
+  /* Color */
+  --color-background: #000000; /* page canvas */
+  --color-surface: #0b0b0c; /* raised panels / cards */
+  --color-surface-2: #141416; /* hover / nested surfaces */
+  --color-foreground: #ffffff; /* primary text */
+  --color-muted: #a1a1aa; /* secondary text (light gray) */
+  --color-faint: #6b6b72; /* tertiary / captions */
+  --color-accent: #d4af37; /* gold */
+  --color-accent-soft: #e7cd6b; /* lighter gold for hover */
+  --color-border: #1c1c1f; /* hairline dividers */
+
+  /* Typography */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", sans-serif;
+  --font-display: var(--font-fraunces), ui-serif, Georgia, "Times New Roman",
+    serif;
+
+  /* Layout */
+  --spacing-section: 8rem; /* default vertical rhythm between sections */
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: dark;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+html {
+  scroll-behavior: smooth;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Keep anchored sections clear of the fixed header. */
+section[id],
+[id].scroll-mt-24 {
+  scroll-margin-top: 5rem;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background-color: var(--color-accent);
+  color: #000000;
+}
+
+/* Scroll-reveal primitive. Hidden until the Reveal component flags it visible. */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+
+.reveal[data-visible="true"] {
+  opacity: 1;
+  transform: none;
+}
+
+/* Honor user motion preferences: show everything instantly, no animation. */
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
