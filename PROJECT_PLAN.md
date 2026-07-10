@@ -21,7 +21,7 @@ Secondary outcome: establish authority through the **Insights Hub** (blog).
 - **Newsletter subscription** → adds subscriber to Klaviyo.
 - **Insights Hub**: blog index + article pages, content managed in Sanity (6 categories).
 - Responsive (desktop/tablet/mobile), SEO-friendly, fast.
-- Brand styling: black / gold / white, minimalist, elegant motion.
+- Brand styling: deep navy-ink / gold / soft white, minimalist, elegant motion.
 - Analytics for the success metrics.
 
 ### Phase 1 scope (out — see Phase 2)
@@ -49,10 +49,10 @@ Consulting services page, case studies, resources, newsletter archive, booking, 
 Defined once in `app/globals.css` (Tailwind v4 `@theme`) and reused everywhere.
 
 ```
-Background      #000000  (black)
+Background      #090E1A  (deep navy-ink)
 Accent          #D4AF37  (gold)
-Text            #FFFFFF  (white)
-Secondary text  light gray (e.g. #A1A1AA / zinc-400)
+Text            #F4F6FB  (soft white)
+Secondary text  cool light gray (e.g. #A3ABC2)
 ```
 
 - **Typography:** clean, modern, generous whitespace. One premium display face for headlines + a readable body face (lock exact fonts during design — current scaffold uses Geist).

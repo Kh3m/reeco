@@ -36,18 +36,27 @@ export async function generateMetadata({
   if (!post) return {};
   const title = post.seo?.title ?? post.title;
   const description = post.seo?.description ?? post.excerpt;
+  const ogImage = post.mainImage
+    ? urlForImage(post.mainImage).width(1200).height(630).fit("crop").url()
+    : undefined;
   return {
     title,
     description,
     alternates: { canonical: `/insights/${slug}` },
     openGraph: {
       type: "article",
+      siteName: SITE_NAME,
       title,
       description,
+      url: `/insights/${slug}`,
       publishedTime: post.publishedAt,
-      ...(post.mainImage
-        ? { images: [urlForImage(post.mainImage).width(1200).height(630).fit("crop").url()] }
-        : {}),
+      ...(ogImage ? { images: [ogImage] } : {}),
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      ...(ogImage ? { images: [ogImage] } : {}),
     },
   };
 }

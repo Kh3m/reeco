@@ -4,14 +4,15 @@ import { sanityFetch } from "@/sanity/fetch";
 import { POST_SLUGS_QUERY } from "@/sanity/queries";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const slugs = await sanityFetch<{ slug: string }[]>({
+  const slugs = await sanityFetch<{ slug: string; updatedAt?: string }[]>({
     query: POST_SLUGS_QUERY,
     tags: ["post"],
     fallback: [],
   });
 
-  const posts: MetadataRoute.Sitemap = slugs.map(({ slug }) => ({
+  const posts: MetadataRoute.Sitemap = slugs.map(({ slug, updatedAt }) => ({
     url: `${SITE_URL}/insights/${slug}`,
+    ...(updatedAt ? { lastModified: updatedAt } : {}),
     changeFrequency: "monthly",
     priority: 0.7,
   }));

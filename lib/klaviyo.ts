@@ -41,6 +41,32 @@ function getListId(kind: KlaviyoListKind): string {
   return id;
 }
 
+async function klaviyoPost(path: string, body: unknown): Promise<Response> {
+  return fetch(`${KLAVIYO_API_BASE}${path}`, {
+    method: "POST",
+    headers: {
+      Authorization: `Klaviyo-API-Key ${getApiKey()}`,
+      accept: "application/json",
+      "content-type": "application/json",
+      revision: process.env.KLAVIYO_API_REVISION || DEFAULT_REVISION,
+    },
+    body: JSON.stringify(body),
+    cache: "no-store",
+  });
+}
+
+async function throwRequestError(res: Response, action: string): Promise<never> {
+  let detail = "";
+  try {
+    detail = (await res.text()).slice(0, 300);
+  } catch {
+    // ignore body read failures
+  }
+  throw new KlaviyoRequestError(
+    `Klaviyo ${action} failed (${res.status}). ${detail}`,
+  );
+}
+
 /**
  * Subscribe an email (and optional first name) to the lead-magnet or
  * newsletter list. Throws KlaviyoConfigError if env is missing,
@@ -54,12 +80,25 @@ export async function subscribe(params: {
 }): Promise<void> {
   const listId = getListId(params.kind);
 
-  const profileAttributes: Record<string, unknown> = {
-    email: params.email,
-    subscriptions: { email: { marketing: { consent: "SUBSCRIBED" } } },
-  };
+  // The subscribe job only accepts email/phone/subscriptions on the profile,
+  // so name (and any other attributes) must be upserted separately first via
+  // profile-import. Non-fatal: a failed upsert shouldn't block the signup.
   if (params.firstName) {
-    profileAttributes.first_name = params.firstName;
+    try {
+      const res = await klaviyoPost("/profile-import/", {
+        data: {
+          type: "profile",
+          attributes: { email: params.email, first_name: params.firstName },
+        },
+      });
+      if (!res.ok) {
+        console.error(
+          `[klaviyo] profile-import failed (${res.status}); continuing with subscribe.`,
+        );
+      }
+    } catch (err) {
+      console.error("[klaviyo] profile-import errored; continuing:", err);
+    }
   }
 
   const body = {
@@ -71,7 +110,17 @@ export async function subscribe(params: {
             ? "ReeCo — Lead Magnet"
             : "ReeCo — Newsletter",
         profiles: {
-          data: [{ type: "profile", attributes: profileAttributes }],
+          data: [
+            {
+              type: "profile",
+              attributes: {
+                email: params.email,
+                subscriptions: {
+                  email: { marketing: { consent: "SUBSCRIBED" } },
+                },
+              },
+            },
+          ],
         },
       },
       relationships: {
@@ -80,31 +129,13 @@ export async function subscribe(params: {
     },
   };
 
-  const res = await fetch(
-    `${KLAVIYO_API_BASE}/profile-subscription-bulk-create-jobs/`,
-    {
-      method: "POST",
-      headers: {
-        Authorization: `Klaviyo-API-Key ${getApiKey()}`,
-        accept: "application/json",
-        "content-type": "application/json",
-        revision: process.env.KLAVIYO_API_REVISION || DEFAULT_REVISION,
-      },
-      body: JSON.stringify(body),
-      cache: "no-store",
-    },
+  const res = await klaviyoPost(
+    "/profile-subscription-bulk-create-jobs/",
+    body,
   );
 
   // The bulk subscribe endpoint returns 202 Accepted on success.
   if (!res.ok) {
-    let detail = "";
-    try {
-      detail = (await res.text()).slice(0, 300);
-    } catch {
-      // ignore body read failures
-    }
-    throw new KlaviyoRequestError(
-      `Klaviyo subscribe failed (${res.status}). ${detail}`,
-    );
+    await throwRequestError(res, "subscribe");
   }
 }

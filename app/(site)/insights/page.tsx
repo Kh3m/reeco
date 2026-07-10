@@ -6,13 +6,30 @@ import { ArticleCard } from "@/components/insights/ArticleCard";
 import { sanityFetch } from "@/sanity/fetch";
 import { CATEGORIES_QUERY, POSTS_QUERY } from "@/sanity/queries";
 import type { Category, PostListItem } from "@/sanity/types";
+import { SITE_NAME } from "@/lib/site";
 import { cn } from "@/lib/cn";
+
+const PAGE_TITLE = "Insights — Strategy & Field Notes on Customer Growth";
+const PAGE_DESCRIPTION =
+  "Strategy, frameworks, and field notes on customer journeys, lifecycle marketing, retention, and growth.";
 
 export const metadata: Metadata = {
   title: "Insights",
-  description:
-    "Strategy, frameworks, and field notes on customer journeys, lifecycle marketing, retention, and growth.",
+  description: PAGE_DESCRIPTION,
   alternates: { canonical: "/insights" },
+  // openGraph/twitter don't inherit page titles (shallow merge), so set fully.
+  openGraph: {
+    type: "website",
+    siteName: SITE_NAME,
+    title: PAGE_TITLE,
+    description: PAGE_DESCRIPTION,
+    url: "/insights",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: PAGE_TITLE,
+    description: PAGE_DESCRIPTION,
+  },
 };
 
 function FilterChip({

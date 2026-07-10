@@ -1,13 +1,12 @@
 import Link from "next/link";
+import Image from "next/image";
 import { cn } from "@/lib/cn";
 
 /**
- * Typographic ReeCo wordmark for the dark canvas: "Ree" in white, "Co" in
- * gold — mirroring the brand logo's color split.
- *
- * NOTE: the supplied logo files (public/images/*.jpeg) have solid white
- * backgrounds and can't sit on the black UI. Replace this with transparent
- * SVG/PNG logo assets (a white/gold variant for dark backgrounds) when ready.
+ * ReeCo brand wordmark. `reeco-logo-dark.png` is derived from the supplied
+ * public/images/reeco_logo.jpeg — background removed and the black "Ree"
+ * recolored to the site's soft white so it sits on the dark navy canvas
+ * (regenerate via the logo processing script if the source art changes).
  */
 export function Logo({ className }: { className?: string }) {
   return (
@@ -15,12 +14,19 @@ export function Logo({ className }: { className?: string }) {
       href="/"
       aria-label="ReeCo — home"
       className={cn(
-        "text-2xl font-bold tracking-tight transition-opacity hover:opacity-80",
+        "inline-flex items-center transition-opacity hover:opacity-80",
         className,
       )}
     >
-      <span className="text-foreground">Ree</span>
-      <span className="text-accent">Co</span>
+      <Image
+        src="/images/reeco-logo-dark.png"
+        alt="ReeCo"
+        width={1081}
+        height={274}
+        sizes="130px"
+        loading="eager"
+        className="h-7 w-auto sm:h-8"
+      />
     </Link>
   );
 }

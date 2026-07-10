@@ -2,22 +2,23 @@
 
 /*
   ReeCo brand design system.
-  Premium, minimalist, analytical. Black canvas, gold accent, white text.
-  Tokens are exposed to Tailwind v4 via @theme so utilities like
-  `bg-background`, `text-accent`, `border-border`, `font-display` are generated.
+  Premium, minimalist, analytical. Midnight navy-ink canvas, gold accent,
+  soft-white text. Tokens are exposed to Tailwind v4 via @theme so utilities
+  like `bg-background`, `text-accent`, `border-border`, `font-display` are
+  generated.
 */
 
 @theme {
   /* Color */
-  --color-background: #000000; /* page canvas */
-  --color-surface: #0b0b0c; /* raised panels / cards */
-  --color-surface-2: #141416; /* hover / nested surfaces */
-  --color-foreground: #ffffff; /* primary text */
-  --color-muted: #a1a1aa; /* secondary text (light gray) */
-  --color-faint: #8b8b94; /* tertiary / captions — AA contrast on black */
+  --color-background: #090e1a; /* page canvas — deep navy-ink */
+  --color-surface: #0f1626; /* raised panels / cards */
+  --color-surface-2: #182136; /* hover / nested surfaces */
+  --color-foreground: #f4f6fb; /* primary text — soft white */
+  --color-muted: #a3abc2; /* secondary text (cool light gray) */
+  --color-faint: #8992ab; /* tertiary / captions — AA contrast on canvas */
   --color-accent: #d4af37; /* gold */
   --color-accent-soft: #e7cd6b; /* lighter gold for hover */
-  --color-border: #1c1c1f; /* hairline dividers */
+  --color-border: #1e2a44; /* hairline dividers — blue-tinted */
 
   /* Typography — single sans family; `font-display` = Inter so headings can be
      re-themed later without touching markup. */
@@ -52,7 +53,7 @@ html {
   z-index: 100;
   border-radius: 9999px;
   background: var(--color-accent);
-  color: #000;
+  color: var(--color-background);
   padding: 0.5rem 1rem;
   font-size: 0.875rem;
   font-weight: 500;
@@ -70,6 +71,13 @@ section[id],
 
 body {
   background-color: var(--color-background);
+  /* Faint indigo wash from the top so the canvas has depth, not flatness. */
+  background-image: radial-gradient(
+    ellipse 120% 64% at 50% -12%,
+    rgba(47, 66, 118, 0.28),
+    transparent 62%
+  );
+  background-repeat: no-repeat;
   color: var(--color-foreground);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
@@ -78,16 +86,17 @@ body {
 
 ::selection {
   background-color: var(--color-accent);
-  color: #000000;
+  color: var(--color-background);
 }
 
 /* --- Hero / banner treatment ------------------------------------------- */
 
-/* Faint engineering grid, masked to fade out toward the edges. */
+/* Faint engineering grid, masked to fade out toward the edges.
+   Lines carry a slight blue cast so they sit inside the navy canvas. */
 .hero-grid {
   background-image:
-    linear-gradient(to right, rgba(255, 255, 255, 0.045) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+    linear-gradient(to right, rgba(163, 180, 226, 0.07) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(163, 180, 226, 0.07) 1px, transparent 1px);
   background-size: 56px 56px;
   -webkit-mask-image: radial-gradient(
     ellipse 80% 60% at 50% 0%,
