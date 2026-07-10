@@ -35,10 +35,10 @@ export const POST_QUERY = defineQuery(`*[
   seo
 }`);
 
-/** Slugs for static generation. */
+/** Slugs for static generation and the sitemap. */
 export const POST_SLUGS_QUERY = defineQuery(`*[
   _type == "post" && defined(slug.current)
-]{ "slug": slug.current }`);
+]{ "slug": slug.current, "updatedAt": _updatedAt }`);
 
 /** Editable global site copy (singleton). */
 export const SETTINGS_QUERY = defineQuery(`*[_type == "siteSettings"][0]{

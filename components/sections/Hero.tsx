@@ -133,7 +133,7 @@ export function Hero() {
                       <span
                         className={
                           stage.focus
-                            ? "relative z-10 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-accent text-xs font-semibold text-black shadow-[0_0_20px_-2px_var(--color-accent)]"
+                            ? "relative z-10 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-accent text-xs font-semibold text-background shadow-[0_0_20px_-2px_var(--color-accent)]"
                             : "relative z-10 flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-border bg-background text-xs font-semibold text-muted"
                         }
                       >

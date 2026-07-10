@@ -6,8 +6,10 @@ import { InsightsPreview } from "@/components/sections/InsightsPreview";
 import { About } from "@/components/sections/About";
 import { FinalCta } from "@/components/sections/FinalCta";
 import type { Metadata } from "next";
+import { SITE_DESCRIPTION } from "@/lib/site";
 
 export const metadata: Metadata = {
+  description: SITE_DESCRIPTION,
   alternates: { canonical: "/" },
 };
 

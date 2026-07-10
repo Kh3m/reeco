@@ -97,7 +97,7 @@ export function EmailForm({
           <a
             href={LEAD_MAGNET_PDF}
             download
-            className="mt-4 inline-flex items-center justify-center gap-2 rounded-full bg-accent px-6 py-3 text-sm font-medium text-black transition-colors hover:bg-accent-soft"
+            className="mt-4 inline-flex items-center justify-center gap-2 rounded-full bg-accent px-6 py-3 text-sm font-medium text-background transition-colors hover:bg-accent-soft"
           >
             Download the Checklist
           </a>
