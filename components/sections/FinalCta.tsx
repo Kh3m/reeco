@@ -12,7 +12,7 @@ export function FinalCta() {
           className="pointer-events-none absolute inset-x-0 -top-1/2 mx-auto h-[40rem] w-[40rem] rounded-full bg-accent/10 blur-3xl"
         />
         <Reveal className="relative">
-          <h2 className="mx-auto max-w-2xl font-display text-3xl leading-tight tracking-tight text-foreground sm:text-5xl">
+          <h2 className="mx-auto max-w-2xl font-display text-3xl font-semibold leading-tight tracking-tight text-foreground sm:text-5xl">
             Ready to improve your customer journey?
           </h2>
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">

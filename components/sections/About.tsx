@@ -10,7 +10,7 @@ export function About() {
           <Eyebrow className="justify-center">About ReeCo</Eyebrow>
         </Reveal>
         <Reveal delay={80}>
-          <p className="mt-8 font-display text-2xl leading-relaxed tracking-tight text-foreground sm:text-3xl">
+          <p className="mt-8 font-display text-2xl font-semibold leading-relaxed tracking-tight text-foreground sm:text-3xl">
             ReeCo explores how businesses attract, convert, retain, and grow
             customers.
           </p>

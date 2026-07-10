@@ -5,6 +5,11 @@ import { LeadMagnet } from "@/components/sections/LeadMagnet";
 import { InsightsPreview } from "@/components/sections/InsightsPreview";
 import { About } from "@/components/sections/About";
 import { FinalCta } from "@/components/sections/FinalCta";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 export default function Home() {
   return (

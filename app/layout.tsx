@@ -1,32 +1,22 @@
 import type { Metadata } from "next";
-import { Inter, Fraunces } from "next/font/google";
+import { Inter } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
-import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
+import { SITE_DESCRIPTION, SITE_NAME, SITE_TITLE, SITE_URL } from "@/lib/site";
 
-// Body / UI: clean, modern grotesque — the "consultancy" half of the brand.
+// One clean, modern sans across the whole site — headings and body. Neutral,
+// premium, minimalist. Headings differentiate via weight + tighter tracking.
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
   display: "swap",
 });
 
-// Display / headlines: elegant serif — the "premium publication" half.
-const fraunces = Fraunces({
-  variable: "--font-fraunces",
-  subsets: ["latin"],
-  display: "swap",
-  axes: ["opsz"],
-});
-
-const SITE_NAME = "ReeCo";
-const SITE_DESCRIPTION =
-  "ReeCo helps businesses uncover revenue leaks, improve customer journeys, increase retention, and build systems that drive long-term growth.";
-
 export const metadata: Metadata = {
-  // TODO: set metadataBase to the production URL once the domain is confirmed.
+  metadataBase: new URL(SITE_URL),
   title: {
-    default: "ReeCo — Customer Journeys, Retention & Growth Systems",
+    default: SITE_TITLE,
     template: "%s — ReeCo",
   },
   description: SITE_DESCRIPTION,
@@ -42,14 +32,24 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     siteName: SITE_NAME,
-    title: "ReeCo — Customer Journeys, Retention & Growth Systems",
+    title: SITE_TITLE,
     description: SITE_DESCRIPTION,
+    url: SITE_URL,
   },
   twitter: {
     card: "summary_large_image",
-    title: "ReeCo — Customer Journeys, Retention & Growth Systems",
+    title: SITE_TITLE,
     description: SITE_DESCRIPTION,
   },
+};
+
+// Organization structured data for rich results.
+const organizationJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: SITE_NAME,
+  url: SITE_URL,
+  description: SITE_DESCRIPTION,
 };
 
 export default function RootLayout({
@@ -58,14 +58,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${inter.variable} ${fraunces.variable} antialiased`}
-    >
+    <html lang="en" className={`${inter.variable} antialiased`}>
       <body className="min-h-screen bg-background text-foreground font-sans">
-        <Header />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(organizationJsonLd),
+          }}
+        />
         {children}
-        <Footer />
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

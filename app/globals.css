@@ -14,16 +14,17 @@
   --color-surface-2: #141416; /* hover / nested surfaces */
   --color-foreground: #ffffff; /* primary text */
   --color-muted: #a1a1aa; /* secondary text (light gray) */
-  --color-faint: #6b6b72; /* tertiary / captions */
+  --color-faint: #8b8b94; /* tertiary / captions — AA contrast on black */
   --color-accent: #d4af37; /* gold */
   --color-accent-soft: #e7cd6b; /* lighter gold for hover */
   --color-border: #1c1c1f; /* hairline dividers */
 
-  /* Typography */
+  /* Typography — single sans family; `font-display` = Inter so headings can be
+     re-themed later without touching markup. */
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system,
     "Segoe UI", sans-serif;
-  --font-display: var(--font-fraunces), ui-serif, Georgia, "Times New Roman",
-    serif;
+  --font-display: var(--font-inter), ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", sans-serif;
 
   /* Layout */
   --spacing-section: 8rem; /* default vertical rhythm between sections */
@@ -35,6 +36,30 @@
 
 html {
   scroll-behavior: smooth;
+}
+
+/* Visible keyboard focus everywhere (buttons opt out via their own ring). */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* Skip-to-content link: off-screen until focused. */
+.skip-link {
+  position: fixed;
+  top: -4rem;
+  left: 1rem;
+  z-index: 100;
+  border-radius: 9999px;
+  background: var(--color-accent);
+  color: #000;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: top 0.2s ease;
+}
+.skip-link:focus {
+  top: 1rem;
 }
 
 /* Keep anchored sections clear of the fixed header. */
@@ -54,6 +79,93 @@ body {
 ::selection {
   background-color: var(--color-accent);
   color: #000000;
+}
+
+/* --- Hero / banner treatment ------------------------------------------- */
+
+/* Faint engineering grid, masked to fade out toward the edges. */
+.hero-grid {
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+  background-size: 56px 56px;
+  -webkit-mask-image: radial-gradient(
+    ellipse 80% 60% at 50% 0%,
+    #000 30%,
+    transparent 75%
+  );
+  mask-image: radial-gradient(
+    ellipse 80% 60% at 50% 0%,
+    #000 30%,
+    transparent 75%
+  );
+}
+
+/* Animated gold sheen for the accent headline line. */
+.text-shine {
+  background-image: linear-gradient(
+    110deg,
+    var(--color-accent) 30%,
+    #f6e9b6 50%,
+    var(--color-accent) 70%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: hero-shine 6s linear infinite;
+}
+
+@keyframes hero-shine {
+  to {
+    background-position: 200% center;
+  }
+}
+
+@keyframes hero-float-a {
+  0%,
+  100% {
+    transform: translate(-50%, 0) scale(1);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translate(-50%, -24px) scale(1.08);
+    opacity: 0.75;
+  }
+}
+
+@keyframes hero-float-b {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.4;
+  }
+  50% {
+    transform: translate(24px, 18px) scale(1.12);
+    opacity: 0.6;
+  }
+}
+
+@keyframes hero-cue {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translateY(6px);
+    opacity: 1;
+  }
+}
+
+.animate-float-a {
+  animation: hero-float-a 9s ease-in-out infinite;
+}
+.animate-float-b {
+  animation: hero-float-b 11s ease-in-out infinite;
+}
+.animate-scroll-cue {
+  animation: hero-cue 1.8s ease-in-out infinite;
 }
 
 /* Scroll-reveal primitive. Hidden until the Reveal component flags it visible. */

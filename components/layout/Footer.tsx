@@ -32,7 +32,7 @@ export function Footer() {
             </p>
             <EmailForm
               variant="newsletter"
-              className="mt-4 sm:justify-end md:max-w-md"
+              className="mt-4 md:ml-auto md:max-w-md"
             />
           </div>
         </div>

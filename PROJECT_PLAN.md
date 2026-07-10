@@ -17,8 +17,8 @@ Secondary outcome: establish authority through the **Insights Hub** (blog).
 
 ### Phase 1 scope (in)
 - One-page marketing **home** with all 7 sections from the requirements.
-- **Lead-magnet capture** (First Name + Email) → delivers the checklist → adds subscriber to Kit.
-- **Newsletter subscription** → adds subscriber to Kit.
+- **Lead-magnet capture** (First Name + Email) → delivers the checklist → adds subscriber to Klaviyo.
+- **Newsletter subscription** → adds subscriber to Klaviyo.
 - **Insights Hub**: blog index + article pages, content managed in Sanity (6 categories).
 - Responsive (desktop/tablet/mobile), SEO-friendly, fast.
 - Brand styling: black / gold / white, minimalist, elegant motion.
@@ -37,7 +37,7 @@ Consulting services page, case studies, resources, newsletter archive, booking, 
 | Language | **TypeScript** | Already configured. |
 | Styling | **Tailwind CSS v4** | Already configured via `@import "tailwindcss"` + `@theme`. |
 | CMS | **Sanity** (headless) | Hosted Studio for non-technical publishing: rich text, images, drafts, scheduling. |
-| Email / Newsletter | **Kit (ConvertKit)** | Lead-magnet automation + newsletter; subscribers tagged by source. |
+| Email / Newsletter | **Klaviyo** | Per project owner. Lists + lifecycle/retention flows; lead-magnet delivered via a Klaviyo flow on list subscription. |
 | Hosting | **Vercel** (recommended) | First-class Next.js support, edge CDN, preview deploys, secure by default. |
 | Analytics | **Vercel Analytics + Vercel Speed Insights** (recommended) | Privacy-friendly, zero-config. Swap for Plausible/GA4 if preferred. |
 | Forms / validation | **react-hook-form + zod** | Shared schema client + server. |
@@ -95,10 +95,10 @@ Plus persistent **header** (logo + nav + CTA) and **footer** (nav, newsletter si
 - Sanity Studio embedded at `/studio` (or hosted separately).
 - Next.js fetches via Sanity client with ISR/tag-based revalidation; image handling via Sanity image CDN.
 
-### Kit / ConvertKit (email)
-- Two entry points: **lead-magnet form** and **newsletter form** → distinct tags/forms so we can measure each.
-- Lead magnet: on submit, subscribe to Kit → Kit automation emails the checklist (PDF asset hosted by us or Kit). Show success state on site.
-- Submissions go through a **Next.js server route / server action** (API key stays server-side) with zod validation, honeypot/anti-spam, and graceful error handling.
+### Klaviyo (email)
+- Two entry points → **two lists** (lead-magnet, newsletter) so signups are measured separately.
+- Lead magnet: on submit, subscribe profile to the lead-magnet list → a Klaviyo **Flow** (triggered on list subscription) emails the checklist PDF. Show success state on site.
+- Submissions go through the **Next.js route handler** `app/api/subscribe` (private key stays server-side) with zod validation, honeypot/anti-spam, and graceful error handling. Provider client is `lib/klaviyo.ts`.
 
 ### Analytics / success metrics
 Track: email signups (lead vs newsletter), time on site, content engagement (article reads, scroll depth), CTA clicks. Wire conversion events on both forms.
@@ -122,7 +122,7 @@ Track: email signups (lead vs newsletter), time on site, content engagement (art
 | 0 | **Project hygiene** | Replace default scaffold (`app/page.tsx`, `layout.tsx`, metadata, favicon, scaffold assets). Set up env-var handling, lint, prettier. |
 | 1 | **Brand foundation** | Tokens in `@theme`, typography, motion strategy, core UI primitives (Button, Section, Container, Heading, EmailForm). |
 | 2 | **Home page** | All 7 sections assembled with real copy, responsive, animated. Forms stubbed. |
-| 3 | **Email integration** | Kit wired for lead magnet + newsletter via server route; checklist delivery automation; success/error states. |
+| 3 | **Email integration** | Klaviyo wired for lead magnet + newsletter via server route; checklist delivery flow; success/error states. |
 | 4 | **Sanity + Insights Hub** | Schemas, Studio, `/insights` index (category filter) + `/insights/[slug]`, editable site copy. |
 | 5 | **SEO + analytics + a11y** | Metadata, sitemap/robots/RSS, JSON-LD, analytics events, accessibility pass. |
 | 6 | **QA + launch** | Cross-device/browser QA, Lighthouse/CWV, content load, deploy to Vercel, domain + DNS, smoke test forms in prod. |
@@ -133,7 +133,7 @@ Suggested sequencing: 0 → 1 → 2 in series; 3 and 4 can run in parallel after
 
 ## 8. Open items to confirm before/while building
 
-- **Domain name** + DNS access (for Vercel + Kit sending domain auth).
+- **Domain name** + DNS access (for Vercel + Klaviyo sending-domain authentication).
 - **Lead-magnet asset**: is the actual *7 Customer Journey Gaps* checklist PDF ready, or do we need it produced?
 - **Initial Insights content**: how many launch articles, and who writes them?
 - **Logo / wordmark** and final font licenses.

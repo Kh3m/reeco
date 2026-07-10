@@ -1,8 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { track } from "@vercel/analytics";
 import { cn } from "@/lib/cn";
+import { LEAD_MAGNET_PDF } from "@/lib/site";
 import { Button } from "./Button";
+import {
+  subscribeSchema,
+  type SubscribeResponse,
+} from "@/lib/subscribe-schema";
 
 type Variant = "lead" | "newsletter";
 
@@ -15,14 +21,7 @@ type EmailFormProps = {
 
 type Status = "idle" | "submitting" | "success" | "error";
 
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-/**
- * Email capture for the lead magnet and newsletter.
- *
- * NOTE: submission is stubbed for Milestone 1. Milestone 3 wires this to Kit
- * (ConvertKit) via a server route — replace the simulated submit below.
- */
+/** Email capture for the lead magnet and newsletter, backed by /api/subscribe (Klaviyo). */
 export function EmailForm({
   variant = "lead",
   className,
@@ -30,6 +29,7 @@ export function EmailForm({
 }: EmailFormProps) {
   const [firstName, setFirstName] = useState("");
   const [email, setEmail] = useState("");
+  const [company, setCompany] = useState(""); // honeypot
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState<string | null>(null);
 
@@ -41,19 +41,41 @@ export function EmailForm({
     e.preventDefault();
     setError(null);
 
-    if (isLead && firstName.trim().length < 1) {
-      setError("Please enter your first name.");
-      return;
-    }
-    if (!EMAIL_RE.test(email)) {
-      setError("Please enter a valid email address.");
+    const input = {
+      variant,
+      email: email.trim(),
+      firstName: isLead ? firstName : undefined,
+    };
+
+    const parsed = subscribeSchema.safeParse(input);
+    if (!parsed.success) {
+      setError(parsed.error.issues[0]?.message ?? "Please check your details.");
       return;
     }
 
     setStatus("submitting");
-    // TODO(M3): POST to /api/subscribe -> Kit (ConvertKit). Tag by `variant`.
-    await new Promise((r) => setTimeout(r, 600));
-    setStatus("success");
+    try {
+      const res = await fetch("/api/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...parsed.data, company }),
+      });
+      const data = (await res.json()) as SubscribeResponse;
+
+      if (res.ok && data.ok) {
+        // Conversion event for the success metrics (email signups by source).
+        track("subscribe", { variant });
+        setStatus("success");
+      } else {
+        setStatus("idle");
+        setError(
+          (!data.ok && data.error) || "Something went wrong. Please try again.",
+        );
+      }
+    } catch {
+      setStatus("idle");
+      setError("Network error. Please try again.");
+    }
   }
 
   if (status === "success") {
@@ -68,9 +90,18 @@ export function EmailForm({
         <p className="font-medium text-accent">You&apos;re in.</p>
         <p className="mt-1 text-muted">
           {isLead
-            ? "Check your inbox — your checklist is on the way."
+            ? "Your checklist is ready — download it below, and we've also sent a copy to your inbox."
             : "Thanks for subscribing. Watch your inbox for the next insight."}
         </p>
+        {isLead && (
+          <a
+            href={LEAD_MAGNET_PDF}
+            download
+            className="mt-4 inline-flex items-center justify-center gap-2 rounded-full bg-accent px-6 py-3 text-sm font-medium text-black transition-colors hover:bg-accent-soft"
+          >
+            Download the Checklist
+          </a>
+        )}
       </div>
     );
   }
@@ -79,8 +110,27 @@ export function EmailForm({
     <form
       onSubmit={handleSubmit}
       noValidate
-      className={cn("flex flex-col gap-3 sm:flex-row sm:items-start", className)}
+      className={cn(
+        "flex w-full flex-col gap-3",
+        // Lead form stacks (name → email → button); newsletter is a row.
+        !isLead && "sm:flex-row sm:items-center",
+        className,
+      )}
     >
+      {/* Honeypot: hidden from users, tempting to bots. */}
+      <div aria-hidden className="hidden">
+        <label htmlFor="company">Company</label>
+        <input
+          id="company"
+          name="company"
+          type="text"
+          tabIndex={-1}
+          autoComplete="off"
+          value={company}
+          onChange={(e) => setCompany(e.target.value)}
+        />
+      </div>
+
       {isLead && (
         <div className="flex-1">
           <label htmlFor="firstName" className="sr-only">
@@ -94,7 +144,7 @@ export function EmailForm({
             placeholder="First name"
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
-            className="w-full rounded-full border border-border bg-surface px-5 py-3 text-sm text-foreground placeholder:text-faint focus:border-accent/60 focus:outline-none"
+            className="w-full rounded-full border border-border bg-surface px-5 py-3.5 text-base text-foreground placeholder:text-faint focus:border-accent/60 focus:outline-none"
           />
         </div>
       )}
@@ -115,7 +165,11 @@ export function EmailForm({
         />
       </div>
 
-      <Button type="submit" disabled={status === "submitting"}>
+      <Button
+        type="submit"
+        disabled={status === "submitting"}
+        className={isLead ? "w-full" : "shrink-0"}
+      >
         {status === "submitting" ? "Sending…" : buttonLabel}
       </Button>
 
