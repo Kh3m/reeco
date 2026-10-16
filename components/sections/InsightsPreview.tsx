@@ -52,7 +52,7 @@ export async function InsightsPreview() {
         <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <Eyebrow>Insights Hub</Eyebrow>
-            <h2 className="mt-6 max-w-2xl font-display text-3xl font-semibold leading-tight tracking-tight text-foreground sm:text-4xl">
+            <h2 className="mt-6 max-w-2xl font-display text-3xl font-medium leading-tight tracking-tight text-foreground sm:text-4xl">
               {hasPosts
                 ? "Latest insights on growing customers."
                 : "Strategy, frameworks, and field notes on growing customers."}

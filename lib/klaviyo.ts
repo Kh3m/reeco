@@ -139,3 +139,71 @@ export async function subscribe(params: {
     await throwRequestError(res, "subscribe");
   }
 }
+
+/** Klaviyo metric name for landing-page enquiries. Build alert Flows on it. */
+export const ENQUIRY_METRIC = "Submitted Landing Page Enquiry";
+
+/**
+ * Route a niche landing-page enquiry to Klaviyo as a "Submitted Landing Page
+ * Enquiry" event. The event upserts the profile (name, company, website) and
+ * carries the niche/page source, so a Klaviyo Flow triggered on this metric
+ * can notify the team and segment by niche.
+ *
+ * Deliberately does NOT subscribe the person to email marketing — an enquiry
+ * isn't marketing consent.
+ */
+export async function submitEnquiry(params: {
+  email: string;
+  name: string;
+  company: string;
+  website?: string;
+  challenge?: string;
+  niche: { id: string; label: string; path: string };
+  referrer?: string;
+}): Promise<void> {
+  const [firstName, ...rest] = params.name.trim().split(/\s+/);
+  const lastName = rest.join(" ");
+
+  const res = await klaviyoPost("/events/", {
+    data: {
+      type: "event",
+      attributes: {
+        time: new Date().toISOString(),
+        unique_id: crypto.randomUUID(),
+        properties: {
+          niche: params.niche.id,
+          niche_label: params.niche.label,
+          page: params.niche.path,
+          company: params.company,
+          website: params.website || null,
+          follow_up_challenge: params.challenge || null,
+          referrer: params.referrer || null,
+        },
+        metric: {
+          data: { type: "metric", attributes: { name: ENQUIRY_METRIC } },
+        },
+        profile: {
+          data: {
+            type: "profile",
+            attributes: {
+              email: params.email,
+              first_name: firstName,
+              ...(lastName ? { last_name: lastName } : {}),
+              organization: params.company,
+              properties: {
+                website: params.website || undefined,
+                enquiry_niche: params.niche.id,
+                enquiry_source_page: params.niche.path,
+              },
+            },
+          },
+        },
+      },
+    },
+  });
+
+  // The events endpoint returns 202 Accepted on success.
+  if (!res.ok) {
+    await throwRequestError(res, "enquiry event");
+  }
+}

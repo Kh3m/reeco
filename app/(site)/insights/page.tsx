@@ -82,7 +82,7 @@ export default async function InsightsPage({
     <main className="pt-16">
       <Section>
         <Eyebrow>Insights Hub</Eyebrow>
-        <h1 className="mt-6 max-w-3xl font-display text-4xl font-semibold leading-tight tracking-tight text-foreground sm:text-5xl">
+        <h1 className="mt-6 max-w-3xl font-display text-4xl font-medium leading-tight tracking-tight text-foreground sm:text-5xl">
           Strategy, frameworks &amp; field notes on growing customers.
         </h1>
         <p className="mt-6 max-w-xl text-lg leading-8 text-muted">

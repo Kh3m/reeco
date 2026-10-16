@@ -5,6 +5,7 @@ import Link from "next/link";
 import { cn } from "@/lib/cn";
 import { Button } from "@/components/ui/Button";
 import { IconClose, IconMenu } from "@/components/ui/icons";
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { Logo } from "./Logo";
 import { CTA_HREF, NAV_LINKS } from "./nav";
 
@@ -32,7 +33,7 @@ export function Header() {
       className={cn(
         "fixed inset-x-0 top-0 z-50 transition-colors duration-300",
         scrolled || menuOpen
-          ? "border-b border-border bg-background/80 backdrop-blur-md"
+          ? "border-b border-border bg-background/90 backdrop-blur-md"
           : "border-b border-transparent",
       )}
     >
@@ -50,6 +51,7 @@ export function Header() {
               {link.label}
             </Link>
           ))}
+          <ThemeToggle />
           <Button href={CTA_HREF}>Get the Checklist</Button>
         </div>
 
@@ -83,6 +85,10 @@ export function Header() {
                 {link.label}
               </Link>
             ))}
+            <div className="flex items-center justify-between px-2 py-3">
+              <span className="text-sm text-muted">Theme</span>
+              <ThemeToggle />
+            </div>
             <Button
               href={CTA_HREF}
               className="mt-3 w-full"

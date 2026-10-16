@@ -29,6 +29,8 @@ Set these in **Vercel → Project → Settings → Environment Variables** (Prod
 | `KLAVIYO_PRIVATE_API_KEY` | `pk_...` | **Server-only secret.** Klaviyo → Settings → API keys |
 | `KLAVIYO_LEAD_MAGNET_LIST_ID` | e.g. `abc123` | Lead-magnet list ID |
 | `KLAVIYO_NEWSLETTER_LIST_ID` | e.g. `def456` | Newsletter list ID |
+| `NEXT_PUBLIC_BOOKING_URL` | _(optional)_ booking link | Shown beside the enquiry form on niche pages |
+| `NEXT_PUBLIC_CONTACT_EMAIL` | _(optional)_ | Footer + privacy policy contact |
 | `NEXT_PUBLIC_SANITY_API_VERSION` | _(optional)_ | Defaults in `sanity/env.ts` |
 | `KLAVIYO_API_REVISION` | _(optional)_ | Defaults in `lib/klaviyo.ts` |
 
@@ -61,6 +63,21 @@ Set these in **Vercel → Project → Settings → Environment Variables** (Prod
    (`https://yourdomain.com/reeco-customer-journey-checklist.pdf`) or attach the PDF.
 4. (Recommended) Authenticate your **sending domain** in Klaviyo for deliverability.
 
+### Niche landing pages (enquiry routing)
+The three niche pages (`/medspa-retention`, `/waterproofing-follow-up`,
+`/generator-installation-follow-up`) post to `/api/enquiry`, which records a
+Klaviyo event **"Submitted Landing Page Enquiry"** (properties: `niche`,
+`page`, `company`, `website`, `follow_up_challenge`). It also updates the
+profile's name, organization, `enquiry_niche` and `enquiry_source_page`.
+Enquirers are **not** subscribed to marketing.
+1. Make sure the private API key has the **Events: write** and **Profiles: write** scopes.
+2. Build a **Flow** triggered by the metric *Submitted Landing Page Enquiry* that emails
+   the team an internal alert (use `{{ event.niche_label }}`, `{{ event.company }}`, etc.).
+   Optionally split by `niche` to route each niche to a different inbox/owner.
+3. Content (copy, VSL video, FAQ) lives in `lib/niches/*.ts`. Set `vsl.video` to
+   `{ provider: "youtube", id }` or `{ provider: "file", src, poster, captions }`
+   once the final videos are supplied.
+
 ### Domain
 - Vercel → Project → **Domains** → add your domain, follow the DNS instructions.
 - Update `NEXT_PUBLIC_SITE_URL` to the final domain and redeploy.
@@ -75,6 +92,13 @@ Set these in **Vercel → Project → Settings → Environment Variables** (Prod
 - [ ] `https://yourdomain.com/robots.txt` and `/sitemap.xml` resolve and reference the real domain.
 - [ ] `https://yourdomain.com/opengraph-image` renders; share a link in Slack/X to confirm the card.
 - [ ] Publish a post in `/studio` → it appears on `/insights` and the homepage within ~1 min.
+- [ ] Each niche page: submit the enquiry form → success message; the Klaviyo event appears
+      with the correct `niche`; the alert flow email arrives.
+- [ ] Each niche page: every "Book a Conversation" CTA scrolls to the form; the video plays
+      (once supplied) and the transcript opens.
+- [ ] Vercel → Analytics → Events shows `cta_click`, `form_start`, `form_submit_success`,
+      `video_play` with the `page` property (custom events need a Vercel Pro plan).
+- [ ] Theme switch (Light / Dark / System) works and persists across pages.
 - [ ] Run **Lighthouse** (Chrome DevTools) on home + an article; check performance/SEO/accessibility.
 
 ---

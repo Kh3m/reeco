@@ -97,7 +97,7 @@ export function EmailForm({
           <a
             href={LEAD_MAGNET_PDF}
             download
-            className="mt-4 inline-flex items-center justify-center gap-2 rounded-full bg-accent px-6 py-3 text-sm font-medium text-background transition-colors hover:bg-accent-soft"
+            className="mt-4 inline-flex items-center justify-center gap-2 rounded-full bg-cta px-6 py-3 text-sm font-medium text-on-cta transition-colors hover:bg-cta-hover"
           >
             Download the Checklist
           </a>
@@ -144,7 +144,7 @@ export function EmailForm({
             placeholder="First name"
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
-            className="w-full rounded-full border border-border bg-surface px-5 py-3.5 text-base text-foreground placeholder:text-faint focus:border-accent/60 focus:outline-none"
+            className="w-full rounded-full border border-border bg-surface px-5 py-3.5 text-base text-foreground placeholder:text-faint focus:border-foreground focus:outline-none"
           />
         </div>
       )}
@@ -161,7 +161,7 @@ export function EmailForm({
           placeholder="Email address"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full rounded-full border border-border bg-surface px-5 py-3 text-sm text-foreground placeholder:text-faint focus:border-accent/60 focus:outline-none"
+          className="w-full rounded-full border border-border bg-surface px-5 py-3 text-sm text-foreground placeholder:text-faint focus:border-foreground focus:outline-none"
         />
       </div>
 
@@ -175,7 +175,7 @@ export function EmailForm({
 
       {error && (
         <p
-          className="w-full text-sm text-red-400 sm:order-last sm:basis-full"
+          className="w-full text-sm text-danger sm:order-last sm:basis-full"
           role="alert"
         >
           {error}

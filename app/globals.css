@@ -2,37 +2,93 @@
 
 /*
   ReeCo brand design system.
-  Premium, minimalist, analytical. Midnight navy-ink canvas, gold accent,
-  soft-white text. Tokens are exposed to Tailwind v4 via @theme so utilities
-  like `bg-background`, `text-accent`, `border-border`, `font-display` are
+  Premium, editorial, strategy-led. Cream canvas, black ink, white panels and
+  restrained gold accents. Tokens are exposed to Tailwind v4 via @theme so
+  utilities like `bg-background`, `text-accent`, `bg-ink`, `font-display` are
   generated.
+
+  Gold usage: `gold` is the brand gold (#D4AF37) for fills, rules and accents on
+  dark ink. On the cream canvas it fails text contrast, so gold *text and icons*
+  on light surfaces use `accent` — a deeper gold that clears WCAG AA.
 */
 
-@theme {
-  /* Color */
-  --color-background: #090e1a; /* page canvas — deep navy-ink */
-  --color-surface: #0f1626; /* raised panels / cards */
-  --color-surface-2: #182136; /* hover / nested surfaces */
-  --color-foreground: #f4f6fb; /* primary text — soft white */
-  --color-muted: #a3abc2; /* secondary text (cool light gray) */
-  --color-faint: #8992ab; /* tertiary / captions — AA contrast on canvas */
-  --color-accent: #d4af37; /* gold */
-  --color-accent-soft: #e7cd6b; /* lighter gold for hover */
-  --color-border: #1e2a44; /* hairline dividers — blue-tinted */
+/* `dark:` utilities follow the resolved theme on <html data-theme>, which the
+   inline script in app/layout.tsx sets from the visitor's preference
+   (light / dark / system — system is the default). */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
-  /* Typography — single sans family; `font-display` = Inter so headings can be
-     re-themed later without touching markup. */
+@theme {
+  /* Light canvas */
+  --color-background: #f6f1e7; /* page canvas — warm cream */
+  --color-surface: #ffffff; /* raised panels / cards */
+  --color-surface-2: #ede5d4; /* deeper cream — alternating bands, hovers */
+  --color-foreground: #111111; /* primary text — near-black ink */
+  --color-muted: #4b473f; /* secondary text */
+  --color-faint: #6b665c; /* captions — AA on cream and white */
+  --color-border: #ddd4c2; /* hairline dividers */
+
+  /* Gold */
+  --color-accent: #7a5c0f; /* readable gold for text/icons on light */
+  --color-gold: #d4af37; /* brand gold — fills, rules, accents on ink */
+  --color-gold-soft: #e7cd6b; /* hover on ink */
+
+  /* Ink (dark) bands — final CTA, footer */
+  --color-ink: #0f0f0f;
+  --color-ink-2: #1c1b19; /* raised panel on ink */
+  --color-on-ink: #f6f1e7; /* text on ink */
+  --color-on-ink-muted: #b9b2a3; /* secondary text on ink */
+  --color-ink-border: #2e2c28;
+
+  /* Primary call-to-action fill: ink on light, gold on dark. */
+  --color-cta: #0f0f0f;
+  --color-cta-hover: #2a2926;
+  --color-on-cta: #f6f1e7;
+
+  --color-danger: #a3261b;
+  --color-success: #2f6b3a;
+
+  /* Typography — editorial serif for display, clean sans for body. */
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system,
     "Segoe UI", sans-serif;
-  --font-display: var(--font-inter), ui-sans-serif, system-ui, -apple-system,
-    "Segoe UI", sans-serif;
+  --font-display: var(--font-newsreader), ui-serif, Georgia, "Times New Roman",
+    serif;
 
   /* Layout */
   --spacing-section: 8rem; /* default vertical rhythm between sections */
 }
 
 :root {
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
   color-scheme: dark;
+
+  --color-background: #0e0d0b; /* warm near-black canvas */
+  --color-surface: #171613;
+  --color-surface-2: #1f1d19;
+  --color-foreground: #f3eee3;
+  --color-muted: #c2bbab;
+  --color-faint: #9a9384;
+  --color-border: #2e2b26;
+
+  --color-accent: #d4af37; /* brand gold reads fine on dark */
+  --color-gold: #d4af37;
+  --color-gold-soft: #e7cd6b;
+
+  /* Ink bands sit a step above the canvas so they still read as a band. */
+  --color-ink: #1a1915;
+  --color-ink-2: #24221d;
+  --color-on-ink: #f3eee3;
+  --color-on-ink-muted: #b9b2a3;
+  --color-ink-border: #34312b;
+
+  --color-cta: #d4af37;
+  --color-cta-hover: #e7cd6b;
+  --color-on-cta: #0f0f0f;
+
+  --color-danger: #f08a7e;
+  --color-success: #7fc48c;
 }
 
 html {
@@ -52,8 +108,8 @@ html {
   left: 1rem;
   z-index: 100;
   border-radius: 9999px;
-  background: var(--color-accent);
-  color: var(--color-background);
+  background: var(--color-ink);
+  color: var(--color-on-ink);
   padding: 0.5rem 1rem;
   font-size: 0.875rem;
   font-weight: 500;
@@ -71,13 +127,6 @@ section[id],
 
 body {
   background-color: var(--color-background);
-  /* Faint indigo wash from the top so the canvas has depth, not flatness. */
-  background-image: radial-gradient(
-    ellipse 120% 64% at 50% -12%,
-    rgba(47, 66, 118, 0.28),
-    transparent 62%
-  );
-  background-repeat: no-repeat;
   color: var(--color-foreground);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
@@ -85,102 +134,22 @@ body {
 }
 
 ::selection {
-  background-color: var(--color-accent);
-  color: var(--color-background);
+  background-color: var(--color-gold);
+  color: var(--color-ink);
 }
 
-/* --- Hero / banner treatment ------------------------------------------- */
-
-/* Faint engineering grid, masked to fade out toward the edges.
-   Lines carry a slight blue cast so they sit inside the navy canvas. */
-.hero-grid {
-  background-image:
-    linear-gradient(to right, rgba(163, 180, 226, 0.07) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(163, 180, 226, 0.07) 1px, transparent 1px);
-  background-size: 56px 56px;
-  -webkit-mask-image: radial-gradient(
-    ellipse 80% 60% at 50% 0%,
-    #000 30%,
-    transparent 75%
-  );
-  mask-image: radial-gradient(
-    ellipse 80% 60% at 50% 0%,
-    #000 30%,
-    transparent 75%
-  );
+/* Native <details> disclosure: hide the default marker, we draw our own. */
+details > summary {
+  list-style: none;
 }
-
-/* Animated gold sheen for the accent headline line. */
-.text-shine {
-  background-image: linear-gradient(
-    110deg,
-    var(--color-accent) 30%,
-    #f6e9b6 50%,
-    var(--color-accent) 70%
-  );
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  animation: hero-shine 6s linear infinite;
-}
-
-@keyframes hero-shine {
-  to {
-    background-position: 200% center;
-  }
-}
-
-@keyframes hero-float-a {
-  0%,
-  100% {
-    transform: translate(-50%, 0) scale(1);
-    opacity: 0.5;
-  }
-  50% {
-    transform: translate(-50%, -24px) scale(1.08);
-    opacity: 0.75;
-  }
-}
-
-@keyframes hero-float-b {
-  0%,
-  100% {
-    transform: translate(0, 0) scale(1);
-    opacity: 0.4;
-  }
-  50% {
-    transform: translate(24px, 18px) scale(1.12);
-    opacity: 0.6;
-  }
-}
-
-@keyframes hero-cue {
-  0%,
-  100% {
-    transform: translateY(0);
-    opacity: 0.5;
-  }
-  50% {
-    transform: translateY(6px);
-    opacity: 1;
-  }
-}
-
-.animate-float-a {
-  animation: hero-float-a 9s ease-in-out infinite;
-}
-.animate-float-b {
-  animation: hero-float-b 11s ease-in-out infinite;
-}
-.animate-scroll-cue {
-  animation: hero-cue 1.8s ease-in-out infinite;
+details > summary::-webkit-details-marker {
+  display: none;
 }
 
 /* Scroll-reveal primitive. Hidden until the Reveal component flags it visible. */
 .reveal {
   opacity: 0;
-  transform: translateY(20px);
+  transform: translateY(16px);
   transition:
     opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
     transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);

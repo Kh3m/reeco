@@ -14,3 +14,12 @@ export const SITE_DESCRIPTION =
 
 /** Lead-magnet PDF, served from /public. Regenerate via `npm run generate:checklist`. */
 export const LEAD_MAGNET_PDF = "/reeco-customer-journey-checklist.pdf";
+
+/**
+ * Client-approved booking tool (Calendly, Cal.com, etc.). When unset, landing
+ * pages rely on the enquiry form alone.
+ */
+export const BOOKING_URL = process.env.NEXT_PUBLIC_BOOKING_URL || "";
+
+/** Public contact address shown in footers and the privacy policy. */
+export const CONTACT_EMAIL = process.env.NEXT_PUBLIC_CONTACT_EMAIL || "";

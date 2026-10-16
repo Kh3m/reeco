@@ -1,23 +1,37 @@
 import Link from "next/link";
 import { cn } from "@/lib/cn";
 
-type Variant = "primary" | "secondary";
-type Size = "md" | "lg";
+type Variant = "primary" | "secondary" | "gold" | "outline-ink";
+type Size = "sm" | "md" | "lg";
 
 const base =
-  "inline-flex items-center justify-center gap-2 rounded-full font-medium tracking-wide transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:opacity-50 disabled:pointer-events-none";
+  "inline-flex items-center justify-center gap-2 rounded-full font-medium tracking-wide transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:opacity-50 disabled:pointer-events-none";
 
 const variants: Record<Variant, string> = {
-  primary:
-    "bg-accent text-background hover:bg-accent-soft hover:shadow-[0_0_40px_-8px_var(--color-accent)]",
+  // Light surfaces
+  primary: "bg-cta text-on-cta hover:bg-cta-hover",
   secondary:
-    "border border-border text-foreground hover:border-accent/60 hover:text-accent",
+    "border border-foreground/25 text-foreground hover:border-foreground hover:bg-surface",
+  // Dark (ink) surfaces
+  gold: "bg-gold text-ink hover:bg-gold-soft focus-visible:ring-offset-ink",
+  "outline-ink":
+    "border border-on-ink/30 text-on-ink hover:border-on-ink focus-visible:ring-offset-ink",
 };
 
 const sizes: Record<Size, string> = {
+  sm: "px-4 py-2.5 text-sm",
   md: "px-6 py-3 text-sm",
   lg: "px-8 py-4 text-base",
 };
+
+/** Button styling for elements that can't use <Button> (e.g. tracked links). */
+export function buttonClassName({
+  variant = "primary",
+  size = "md",
+  className,
+}: { variant?: Variant; size?: Size; className?: string } = {}) {
+  return cn(base, variants[variant], sizes[size], className);
+}
 
 type CommonProps = {
   variant?: Variant;
@@ -49,7 +63,7 @@ export function Button({
   children,
   ...rest
 }: ButtonProps) {
-  const classes = cn(base, variants[variant], sizes[size], className);
+  const classes = buttonClassName({ variant, size, className });
 
   if (rest.href !== undefined) {
     return (

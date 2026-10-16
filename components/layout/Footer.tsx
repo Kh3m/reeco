@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Container } from "@/components/ui/Container";
 import { EmailForm } from "@/components/ui/EmailForm";
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { Logo } from "./Logo";
 import { NAV_LINKS } from "./nav";
 
@@ -49,9 +50,18 @@ export function Footer() {
               </Link>
             ))}
           </nav>
-          <p className="text-xs text-faint">
-            © {YEAR} ReeCo. All rights reserved.
-          </p>
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
+            <Link
+              href="/privacy"
+              className="text-xs text-faint transition-colors hover:text-foreground"
+            >
+              Privacy policy
+            </Link>
+            <p className="text-xs text-faint">
+              © {YEAR} ReeCo. All rights reserved.
+            </p>
+            <ThemeToggle />
+          </div>
         </div>
       </Container>
     </footer>
