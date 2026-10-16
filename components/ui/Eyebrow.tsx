@@ -14,7 +14,7 @@ export function Eyebrow({ children, className }: EyebrowProps) {
         className,
       )}
     >
-      <span aria-hidden className="h-px w-6 bg-accent/60" />
+      <span aria-hidden className="h-px w-6 bg-gold" />
       {children}
     </span>
   );

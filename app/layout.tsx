@@ -1,14 +1,21 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Newsreader } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 import { SITE_DESCRIPTION, SITE_NAME, SITE_TITLE, SITE_URL } from "@/lib/site";
+import { THEME_SCRIPT } from "@/lib/theme";
 
-// One clean, modern sans across the whole site — headings and body. Neutral,
-// premium, minimalist. Headings differentiate via weight + tighter tracking.
+// Editorial pairing: Newsreader (serif) for display headings, Inter for body
+// and UI. Swap here if the client supplies brand fonts.
 const inter = Inter({
   variable: "--font-inter",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const newsreader = Newsreader({
+  variable: "--font-newsreader",
   subsets: ["latin"],
   display: "swap",
 });
@@ -59,7 +66,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} antialiased`}>
+    // data-theme is rewritten by THEME_SCRIPT before paint, hence
+    // suppressHydrationWarning on <html>.
+    <html
+      lang="en"
+      data-theme="light"
+      className={`${inter.variable} ${newsreader.variable} antialiased`}
+      suppressHydrationWarning
+    >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
+      </head>
       <body className="min-h-screen bg-background text-foreground font-sans">
         <script
           type="application/ld+json"

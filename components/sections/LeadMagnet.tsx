@@ -17,7 +17,7 @@ export function LeadMagnet() {
         <div className="grid gap-12 p-8 sm:p-12 lg:grid-cols-2 lg:items-center">
           <Reveal>
             <Eyebrow>Free Checklist</Eyebrow>
-            <h2 className="mt-6 font-display text-3xl font-semibold leading-tight tracking-tight text-foreground sm:text-4xl">
+            <h2 className="mt-6 font-display text-3xl font-medium leading-tight tracking-tight text-foreground sm:text-4xl">
               7 Customer Journey Gaps Costing Businesses Revenue
             </h2>
             <ul className="mt-8 space-y-3">

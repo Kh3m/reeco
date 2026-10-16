@@ -19,7 +19,7 @@ export function JourneyRoadmap() {
     <Section id="roadmap" className="border-t border-border bg-surface/40">
       <Reveal>
         <Eyebrow>The Customer Journey</Eyebrow>
-        <h2 className="mt-6 max-w-2xl font-display text-3xl font-semibold leading-tight tracking-tight text-foreground sm:text-4xl">
+        <h2 className="mt-6 max-w-2xl font-display text-3xl font-medium leading-tight tracking-tight text-foreground sm:text-4xl">
           Every customer travels a path. Most businesses only build the first
           two steps.
         </h2>
@@ -35,7 +35,7 @@ export function JourneyRoadmap() {
             className="flex flex-col items-center gap-3 sm:flex-row"
           >
             <div className="flex w-full items-center justify-center gap-3 rounded-xl border border-border bg-background px-4 py-3 sm:w-auto sm:justify-start">
-              <span className="font-display text-sm font-semibold text-accent">
+              <span className="font-display text-sm font-medium text-accent">
                 {String(i + 1).padStart(2, "0")}
               </span>
               <span className="whitespace-nowrap text-sm font-medium text-foreground">
